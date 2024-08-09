@@ -1,14 +1,7 @@
--- Write a SQL script that creates a trigger that resets the attribute valid_email
--- only when the email has been changed.
--- Context: Nothing related to MySQL, but perfect for user email validation -
--- distribute the logic to the database itself!
+-- Write a SQL script that creates a trigger that decreases the quantity of an item after adding a new order.
+-- Quantity in the table items can be negative.
+-- Context: Updating multiple tables for one action from your application can generate issue: network disconnection,
+-- crash, etc… to keep your data in a good shape, let MySQL do it for you!
 
-DELIMITER $$ ;
-CREATE TRIGGER resets_valid_email BEFORE UPDATE ON users
-FOR EACH ROW
-BEGIN
-	IF NEW.email != OLD.email THEN
-		SET NEW.valid_email = 0;
-	END IF;
-END;
-DELIMITER ;
+CREATE TRIGGER decrease_items_quantity AFTER INSERT ON orders FOR EACH ROW
+UPDATE items SET quantity = quantity - NEW.number WHERE name=NEW.item_name;
