@@ -1,0 +1,2 @@
+// creating a new database using 'use'
+use my_db
