@@ -31,6 +31,7 @@ def replay(fn: Callable) -> None:
             fxn_output,
         ))
 
+
 def call_history(method: Callable) -> Callable:
     """history of inputs and outputs of the Cache class method
     """
@@ -48,6 +49,7 @@ def call_history(method: Callable) -> Callable:
         return output
     return wrapper
 
+
 def count_calls(method: Callable) -> Callable:
     """ #no of calls made to Cache class methods
     """
@@ -61,6 +63,7 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
     return wrapper
+
 
 class Cache():
     """
