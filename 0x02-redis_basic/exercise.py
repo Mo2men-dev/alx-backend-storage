@@ -6,6 +6,19 @@ import uuid
 import redis
 from typing import Union, Callable
 
+def count_calls(method: Callable) -> Callable:
+    """ # of calls made to Cashe class methods
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
+        """returns the method after incrementing call counter
+        """
+        if isinstance(self._redis, redis.Redis):
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+    return wrapper
 
 class Cache():
     """
@@ -26,6 +39,7 @@ class Cache():
         data = self._redis.get(key)
         return fn(data) if fn is not None else data
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Function to store data
