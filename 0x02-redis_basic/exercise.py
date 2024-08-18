@@ -4,7 +4,8 @@ Cache Class Module
 """
 import uuid
 import redis
-from typing import Union, Callable
+from functools import wraps
+from typing import Union, Callable, Any
 
 
 def replay(fn: Callable) -> None:
