@@ -6,8 +6,26 @@ import uuid
 import redis
 from typing import Union, Callable
 
+
+def call_history(method: Callable) -> Callable:
+    """history of inputs and outputs of the Cache class method
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """wrapper
+        """
+        inputs_keys = "{}:inputs".format(method.__qualname__)
+        outputs_keys = "{}:outputs".format(method.__qualname__)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(inputs_keys, str(args))
+        output = method(self, *args, **kwargs)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(outputs_keys, output)
+        return output
+    return wrapper
+
 def count_calls(method: Callable) -> Callable:
-    """ # of calls made to Cashe class methods
+    """ #no of calls made to Cache class methods
     """
     @wraps(method)
     def wrapper(self, *args, **kwargs) -> Any:
@@ -40,6 +58,7 @@ class Cache():
         return fn(data) if fn is not None else data
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Function to store data
