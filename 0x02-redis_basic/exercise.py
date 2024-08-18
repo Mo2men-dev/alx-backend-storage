@@ -4,7 +4,7 @@ Cache Class Module
 """
 import uuid
 import redis
-from typing import Union
+from typing import Union, Callable
 
 
 class Cache():
@@ -19,17 +19,12 @@ class Cache():
         self._redis.flushdb(True)
 
     def get(self, key: str, fn: Callable = None) -> Union[
-            str, bytes, int, float]):
+            str, bytes, int, float]:
         """
-        gets data from redis
+        get method
         """
         data = self._redis.get(key)
-
-        if data is not None:
-            return fn(data)
-
-        return data
-
+        return fn(data) if fn is not None else data
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
