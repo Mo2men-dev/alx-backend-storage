@@ -18,6 +18,19 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb(True)
 
+    def get(self, key: str, fn: Callable = None) -> Union[
+            str, bytes, int, float]):
+        """
+        gets data from redis
+        """
+        data = self._redis.get(key)
+
+        if data is not None:
+            return fn(data)
+
+        return data
+
+
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Function to store data
