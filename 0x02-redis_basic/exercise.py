@@ -33,3 +33,14 @@ class Cache():
         r_key = str(uuid.uuid4())
         self._redis.set(r_key, data)
         return r_key
+
+    def get_str(self, key: str) -> str:
+        """
+        get from str
+        """
+        return self.get(key, lambda x: x.decode('utf-8'))
+
+    def get_int(self, key: str) -> int:
+        """get from int
+        """
+        return self.get(key, lambda x: int(x))
